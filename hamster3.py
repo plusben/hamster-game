@@ -1,3 +1,25 @@
+"""
+Hamster-Territorium Spiel mit Pygame
+
+Dieses Spiel ist ein einfaches 2D-Puzzle-Spiel, entwickelt mit der Pygame-Bibliothek. 
+Das Ziel des Spiels ist es, einen virtuellen Hamster durch ein Territorium zu steuern, 
+um alle verstreuten Körner zu sammeln. Das Territorium ist ein Raster aus Kacheln, 
+wobei einige Kacheln als Mauern dienen, die nicht betreten werden können.
+
+Eigenschaften des Spiels:
+- Ein Hamster bewegt sich zufällig durch das Territorium.
+- Der Hamster muss alle Körner im Territorium sammeln.
+- Das Spiel zeigt visuell das Territorium, den Hamster, Körner und Mauern.
+- Das Spiel endet, wenn alle Körner gesammelt wurden.
+
+Pygame ist eine Open-Source-Bibliothek für die Entwicklung von Spielen in Python. 
+Sie bietet Funktionen zur Grafikdarstellung, Sound-Wiedergabe und zur Handhabung von Benutzereingaben. 
+In diesem Spiel wird Pygame verwendet, um das Spiel-Fenster zu erstellen, Grafiken zu rendern 
+und Benutzerinteraktionen wie das Schließen des Fensters zu verarbeiten.
+
+GPL3.0 Licence - Benedikt Splinter https://github.com/plusben/hamster-game/
+"""
+
 import pygame
 import random
 
