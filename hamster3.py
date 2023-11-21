@@ -1,9 +1,9 @@
 """
 Hamster-Territorium Spiel mit Pygame
 
-Dieses Spiel ist ein einfaches 2D-Puzzle-Spiel, entwickelt mit der Pygame-Bibliothek. 
-Das Ziel des Spiels ist es, einen virtuellen Hamster durch ein Territorium zu steuern, 
-um alle verstreuten Körner zu sammeln. Das Territorium ist ein Raster aus Kacheln, 
+Dieses Spiel ist ein einfaches 2D-Puzzle-Spiel, entwickelt mit der Pygame-Bibliothek.
+Das Ziel des Spiels ist es, einen virtuellen Hamster durch ein Territorium zu steuern,
+um alle verstreuten Körner zu sammeln. Das Territorium ist ein Raster aus Kacheln,
 wobei einige Kacheln als Mauern dienen, die nicht betreten werden können.
 
 Eigenschaften des Spiels:
@@ -12,9 +12,9 @@ Eigenschaften des Spiels:
 - Das Spiel zeigt visuell das Territorium, den Hamster, Körner und Mauern.
 - Das Spiel endet, wenn alle Körner gesammelt wurden.
 
-Pygame ist eine Open-Source-Bibliothek für die Entwicklung von Spielen in Python. 
-Sie bietet Funktionen zur Grafikdarstellung, Sound-Wiedergabe und zur Handhabung von Benutzereingaben. 
-In diesem Spiel wird Pygame verwendet, um das Spiel-Fenster zu erstellen, Grafiken zu rendern 
+Pygame ist eine Open-Source-Bibliothek für die Entwicklung von Spielen in Python.
+Sie bietet Funktionen zur Grafikdarstellung, Sound-Wiedergabe und zur Handhabung von Benutzereingaben.
+In diesem Spiel wird Pygame verwendet, um das Spiel-Fenster zu erstellen, Grafiken zu rendern
 und Benutzerinteraktionen wie das Schließen des Fensters zu verarbeiten.
 
 GPL3.0 Licence - Benedikt Splinter https://github.com/plusben/hamster-game/
@@ -72,6 +72,23 @@ class Hamster:
 
 class HamsterTerritorium:
     def __init__(self, reihen, spalten):
+        """
+        Konstruktor der Klasse HamsterTerritorium.
+
+        Args:
+            reihen (int): Anzahl der Reihen im Territorium.
+            spalten (int): Anzahl der Spalten im Territorium.
+
+        Attributes:
+            reihen (int): Speichert die Anzahl der Reihen im Territorium.
+            spalten (int): Speichert die Anzahl der Spalten im Territorium.
+            terr (List[List[str]]): Ein 2D-Array, das das Territorium darstellt. Jedes Element des Arrays
+                                     repräsentiert eine Zelle des Territoriums, wobei Leerzeichen (' ')
+                                     freie Zellen, '#' Mauern und 'k' Körner repräsentieren.
+            hamster_position (Tuple[int, int]): Die aktuelle Position des Hamsters im Territorium,
+                                                initialisiert mit None, wird später gesetzt.
+        """
+
         self.reihen = reihen  # Anzahl der Reihen im Territorium
         self.spalten = spalten  # Anzahl der Spalten im Territorium
         # Erstellen eines 2D-Arrays, das das Territorium repräsentiert
@@ -92,7 +109,14 @@ class HamsterTerritorium:
             self.terr[r][s] = 'k'  # 'k' steht für Korn
 
     def platziere_hamster(self):
-        # Platzieren des Hamsters an einer zufälligen Position im Territorium
+        """
+        Platziert den Hamster an einer zufälligen Position im Territorium, die nicht von einer Mauer
+        oder einem Korn besetzt ist.
+
+        Die Position des Hamsters wird im Attribut `hamster_position` gespeichert und das entsprechende
+        Zellenelement im Territorium wird auf 'H' gesetzt, um den Hamster zu markieren.
+        """
+
         r, s = random.randint(1, self.reihen - 2), random.randint(1, self.spalten - 2)
         while self.terr[r][s] != ' ':
             r, s = random.randint(1, self.reihen - 2), random.randint(1, self.spalten - 2)
@@ -101,8 +125,17 @@ class HamsterTerritorium:
 
     def draw(self, fenster):
         fenster.fill((255, 255, 255))  # Füllt das Fenster mit weißem Hintergrund
+        """
+        Zeichnet das Territorium und seine Inhalte (Hamster, Mauern, Körner) auf das gegebene Pygame-Fenster.
+        
+        Args:
+            fenster (pygame.Surface): Das Pygame-Fenster, auf dem das Territorium gezeichnet wird.
+        
+        Diese Methode geht durch jedes Element des Territoriums und zeichnet entsprechend der Zellinhalte 
+        (Hamster, Mauern, Körner) auf das Fenster. Hamster werden mit dem Hamster-Bild dargestellt, Mauern 
+        als schwarze Quadrate und Körner als gelbe Kreise.
+        """
 
-        # Zeichnet das Territorium Zelle für Zelle
         for r in range(self.reihen):
             for s in range(self.spalten):
                 element = self.terr[r][s]
@@ -125,32 +158,33 @@ class HamsterTerritorium:
 # Hauptteil des Programms
 
 # Territorium und Hamster erstellen
-terr = HamsterTerritorium(12, 16)
-terr.platziere_hamster()
-hamster = Hamster(terr)
+terr = HamsterTerritorium(12, 16)  # Erstellt ein neues Territorium mit 12 Reihen und 16 Spalten.
+terr.platziere_hamster()  # Platziert den Hamster an einer zufälligen Startposition im Territorium.
+hamster = Hamster(terr)  # Erstellt ein Hamster-Objekt und übergibt das Territorium.
 
 # Hauptschleife des Spiels
 weitermachen = True
 while weitermachen:
+    # Überprüft alle Ereignisse, die seit dem letzten Durchlauf der Schleife aufgetreten sind.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            weitermachen = False  # Beendet das Spiel, wenn das Fenster geschlossen wird
+            weitermachen = False  # Beendet die Schleife und damit das Spiel, wenn das Fenster geschlossen wird.
 
     # Bewegt den Hamster und prüft, ob alle Körner gefunden wurden
-    hamster.bewege()
+    hamster.bewege()  # Bewegt den Hamster in eine zufällige Richtung.
     if hamster.hat_alles_gefunden():
         print(f"Level geschafft in {hamster.schritte} Schritten!")
-        weitermachen = False
+        weitermachen = False  # Beendet die Schleife, wenn alle Körner gefunden wurden.
 
     # Zeichnet das Territorium und den Hamster
-    terr.draw(fenster)
+    terr.draw(fenster)  # Zeichnet den aktuellen Zustand des Territoriums und des Hamsters auf dem Bildschirm.
 
     # Aktualisiert den Bildschirm
-    pygame.display.flip()
-    clock.tick(20)  # Steuert die Aktualisierungsrate des Spiels
+    pygame.display.flip()  # Aktualisiert den gesamten Bildschirm mit den gezeichneten Elementen.
+    clock.tick(20)  # Begrenzt die Bildwiederholrate auf 20 Frames pro Sekunde, um die Spielgeschwindigkeit zu steuern.
 
 # Kurze Pause, damit der Spieler die Nachricht sehen kann
-pygame.time.wait(2000)
+pygame.time.wait(2000)  # Wartet 2000 Millisekunden (2 Sekunden), bevor das Programm weiterläuft.
 
 # Beendet Pygame und schließt das Fenster
-pygame.quit()
+pygame.quit()  # Schließt das Pygame-Fenster und beendet alle Pygame-Prozesse.
