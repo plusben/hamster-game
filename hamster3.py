@@ -34,6 +34,10 @@ pygame.init()  # Startet alle notwendigen Pygame-Module
 fenster = pygame.display.set_mode((FENSTER_BREITE, FENSTER_HOEHE))  # Erstellt das Fenster
 pygame.display.set_caption('Hamster-Territorium')  # Setzt den Titel des Fensters
 clock = pygame.time.Clock()  # Für die Steuerung der Framerate
+pygame.font.init()  # Initialisiert das Schriftartmodul
+schriftart = pygame.font.SysFont("Arial", 24)  # Wählt eine Schriftart und Größe
+
+
 
 # Grafik für den Hamster laden und skalieren
 hamster_bild = pygame.image.load('hamster.png').convert_alpha()  # Lädt das Hamster-Bild
@@ -45,11 +49,22 @@ class Hamster:
         self.terr = terr  # Das Territorium, in dem sich der Hamster befindet
         self.position = self.terr.hamster_position  # Startposition des Hamsters
         self.schritte = 0  # Zählt die Anzahl der Schritte, die der Hamster macht
+        self.aktuelle_richtung = 'N/A'  # Initialisiert die Richtungsvariable
 
     def bewege(self):
         richtungen = [(0, -1), (1, 0), (0, 1), (-1, 0)]  # Mögliche Bewegungsrichtungen (Norden, Osten, Süden, Westen)
         richtung = random.choice(richtungen)  # Wählt eine zufällige Richtung aus
         neue_position = (self.position[0] + richtung[0], self.position[1] + richtung[1])  # Berechnet die neue Position
+
+        # Richtungsaktualisierung
+        if richtung == (0, -1):
+            self.aktuelle_richtung = 'Norden'
+        elif richtung == (1, 0):
+            self.aktuelle_richtung = 'Osten'
+        elif richtung == (0, 1):
+            self.aktuelle_richtung = 'Süden'
+        elif richtung == (-1, 0):
+            self.aktuelle_richtung = 'Westen'
 
         # Überprüft, ob die neue Position innerhalb des Territoriums und nicht auf einer Mauer ist
         if (0 <= neue_position[0] < self.terr.reihen and
@@ -124,7 +139,6 @@ class HamsterTerritorium:
         self.terr[r][s] = 'H'  # 'H' steht für Hamster
 
     def draw(self, fenster):
-        fenster.fill((255, 255, 255))  # Füllt das Fenster mit weißem Hintergrund
         """
         Zeichnet das Territorium und seine Inhalte (Hamster, Mauern, Körner) auf das gegebene Pygame-Fenster.
         
@@ -135,7 +149,7 @@ class HamsterTerritorium:
         (Hamster, Mauern, Körner) auf das Fenster. Hamster werden mit dem Hamster-Bild dargestellt, Mauern 
         als schwarze Quadrate und Körner als gelbe Kreise.
         """
-
+        fenster.fill((255, 255, 255))  # Füllt das Fenster mit weißem Hintergrund
         for r in range(self.reihen):
             for s in range(self.spalten):
                 element = self.terr[r][s]
@@ -178,7 +192,23 @@ while weitermachen:
 
     # Zeichnet das Territorium und den Hamster
     terr.draw(fenster)  # Zeichnet den aktuellen Zustand des Territoriums und des Hamsters auf dem Bildschirm.
+    # Textdarstellung für Schrittzähler und Körneranzahl
+    schritte_text = schriftart.render(f"Schritte: {hamster.schritte}", True, (0, 0, 0))
+    koerner_text = schriftart.render(f"Körner: {hamster.koerner_im_maul}", True, (0, 0, 0))
 
+    richtung_text = schriftart.render(f"Richtung: {hamster.aktuelle_richtung}", True, (0, 0, 0))
+    fenster.blit(richtung_text, (60, 100))  # Position kann angepasst werden
+
+    if hamster.hat_alles_gefunden():
+        endnachricht = schriftart.render("Glückwunsch, geschafft!", True, (0, 128, 0))
+        fenster.blit(endnachricht, (FENSTER_BREITE // 2 - 100, FENSTER_HOEHE // 2))  # Zentriert die Nachricht
+        pygame.display.flip()  # Aktualisiert den Bildschirm, um die Nachricht anzuzeigen
+        pygame.time.wait(3000)  # Wartet 3 Sekunden, damit der Spieler die Nachricht lesen kann
+        weitermachen = False
+
+    # Zeichnet den Text auf das Fenster
+    fenster.blit(schritte_text, (60, 60))  # Position kann angepasst werden
+    fenster.blit(koerner_text, (60, 80))  # Position kann angepasst werden
     # Aktualisiert den Bildschirm
     pygame.display.flip()  # Aktualisiert den gesamten Bildschirm mit den gezeichneten Elementen.
     clock.tick(20)  # Begrenzt die Bildwiederholrate auf 20 Frames pro Sekunde, um die Spielgeschwindigkeit zu steuern.
