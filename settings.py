@@ -1,0 +1,5 @@
+# Konstanten
+BILDSCHIRM_GROESSE = (1024, 768)
+FELDGROESSE = 50
+UHR_RATE = 15
+HAMSTER_BILD_PFAD = 'hamster.png'
