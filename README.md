@@ -27,4 +27,4 @@ Installieren Sie Pygame (falls noch nicht installiert):
 
 Starten Sie das Spiel:
 
-    python hamster3.py
+    python main.py
